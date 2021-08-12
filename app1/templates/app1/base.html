@@ -1,3 +1,6 @@
+<!-- this is the foundation of all the templates and we created the code which one is same for
+ all the templates(navigation bar) and wherever we need changes there we created the block there
+  we can made a changes in other templates-->
 <!DOCTYPE html>
 <html lang="en">
     {% load static %}
@@ -5,24 +8,39 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>shopping bill project</title>
+    <!-- the title for all the template may be diff for diff template so create a block--> 
+    <title>shopping_bill | {% block title %} {% endblock title %}</title>
+    <!-- the title for all the template may be diff for diff template-->
     <!--link the css files below-->
+    <link rel="stylesheet" href="{% static 'app1/css/owl.carousel.min.css' %}">
     <link rel="stylesheet" href="{% static 'app1/css/fontawesome.min.css' %}">
     <link rel="stylesheet" href="{% static 'app1/css/bootstrap.min.css' %}">
     <link rel="stylesheet" href="{% static 'app1/css/base.html' %}">
 
 </head>
 <body>
-    <h5>welcome to shopping bill project</h5>
+<!-- navigation bar which is same for all the templates create below-->
+<div class="container">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+      <a class="navbar-brand" href="#">Navbar</a>
+    </nav>
+  </div>
+<!-- end of navigation bar which is same for all the templates-->
+{% block banner_slider %} {% endblock banner_slider %} <!-- its eampty we are going to use it in home.html -->
+{% block livesale %} {% endblock livesale %}
+{% block main-content %} {% endblock main-content %} <!-- we can customizw whenever needed in other template -->
 
 
+<!--start-footer which is same for all the templates-->
+
+<!-- end-footer which is same for all the templates-->
 
 
     <!-- link the js files below-->
     <script src="{% static 'app1/js/jquery.js' %}"></script>
     <script src="{% static 'app1/js/popper.js' %}"></script>
+    <script src="{% static 'app1/js/owl.carousel.min.js' %}"></script>
     <script src="{% static 'app1/js/fontawesome.min.js' %}"></script>
     <script src="{% static 'app1/js/bootstrap.min.js' %}"></script>
-
 </body>
 </html>
