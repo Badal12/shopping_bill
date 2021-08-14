@@ -15,16 +15,78 @@
     <link rel="stylesheet" href="{% static 'app1/css/owl.carousel.min.css' %}">
     <link rel="stylesheet" href="{% static 'app1/css/fontawesome.min.css' %}">
     <link rel="stylesheet" href="{% static 'app1/css/bootstrap.min.css' %}">
-    <link rel="stylesheet" href="{% static 'app1/css/base.html' %}">
-
+    <link rel="stylesheet" href="{% static 'app1/css/base.css' %}">
 </head>
 <body>
 <!-- navigation bar which is same for all the templates create below-->
-<div class="container">
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-      <a class="navbar-brand" href="#">Navbar</a>
-    </nav>
-  </div>
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="/">Shopping Bill</a> <!--company name -->
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span> <!-- -this is a button when we open a website in small device it will show drop down item -->
+      </button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent"> <!--in above toggle button below unorder list will collapse -->
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item"> <!--unorder list item--home, electronics(mobile,laptop), fashion(topwear,bottomwear) -->
+            <a class="nav-link active" aria-current="page" href="/">Home</a>
+          </li>
+          <li class="nav-item dropdown"> <!-- use this tag when any link is dropdown-->
+            <a class="nav-link dropdown-toggle text-white" href="#" id="electronicsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              Electronics
+            </a><!-- -->
+            <ul class="dropdown-menu" aria-labelledby="electronicsDropdown"><!-- this is menu for above dropdown-->
+              <li><a class="dropdown-item" href="{% url 'mobile' %}">Mobile</a></li><!--thsi are the item of menu -->
+              <li><a class="dropdown-item" href="#">Laptop</a></li>
+            </ul>
+          </li>
+          <li class="nav-item dropdown"> <!--another 2nd dropdown link -->
+            <a class="nav-link dropdown-toggle text-white" href="#" id="fashionDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              Fashion
+            </a><!-- -->
+            <ul class="dropdown-menu" aria-labelledby="fashionDropdown"><!--thsi are the item of menu -->
+              <li><a class="dropdown-item" href="#">Top Wear</a></li>
+              <li><a class="dropdown-item" href="#">Bottom Wear</a></li>
+            </ul>
+          </li>
+        </ul>
+        <!--left side navbar home,electronic,fashion over-->
+        <!-- now take one search box -->
+        <form class="d-flex"> <!-- use a class form-control for search box-->
+          <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+          <button class="btn btn-warning" type="submit">Search</button>
+        </form>
+        <!-- search box over -->
+        <div>        <!-- take a div for profile toggle-button -->
+         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+             {% if request.user.is_authenticated %} <!-- means if user is login then only below show else else part will show login and register part-->
+          <li class="nav-item dropdown mx-2">
+             <a class="nav-link dropdown-toggle text-white" href="#" id="profileDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              {{request.user.username|capfirst}}
+             </a>
+             <ul class="dropdown-menu" aria-labelledby="profileDropdown">
+               <li><a class="dropdown-item" href="{% url 'profile' %}">Profile</a></li> <!-- when you click on profile profile url will hit and redirect to the views.py and render the profile.html file-->
+               <li><a class="dropdown-item" href="{% url 'orders' %}">Orders</a></li>
+               <li><a class="dropdown-item" href="{% url 'changepassword' %}">Change Password</a></li>
+               <li><a class="dropdown-item" href="{% url 'logout' %}">Logout</a></li>
+             </ul>
+           </li>
+           <!--if you want to add any item then use nav-item -->
+           <li class="nav-item mx-2">
+            <a href="{% url 'showcart' %}" class="nav-link text-white"><span class="badge bg-danger"></span> Cart </a>
+           </li>
+             {% else %} 
+           <li class="nav-item mx-3 d-flex">
+            <a href="{% url 'login' %}" class="nav-link text-white">Login</a>
+           </li>
+           <li class="nav-item mr-2 d-flex-row ">
+            <a href="{% url 'customerregistration' %}" class="nav-link text-white">Register</a>
+           </li>
+           {% endif %}
+         </ul>
+        </div>
+      </div>
+    </div>
+   </nav>
 <!-- end of navigation bar which is same for all the templates-->
 {% block banner_slider %} {% endblock banner_slider %} <!-- its eampty we are going to use it in home.html -->
 {% block livesale %} {% endblock livesale %}
@@ -32,15 +94,20 @@
 
 
 <!--start-footer which is same for all the templates-->
+<footer class="container-fluid bg-dark text-center p-2 mt-5">
+    <small class="text-white">Copyright &copy; 2021 || Designed by GeekyShows || </small>
+    <img src="{% static 'app1/images/payment.png' %}" alt="" srcset="" class="img-fluid" height="2px">
 
+</footer>
 <!-- end-footer which is same for all the templates-->
 
 
     <!-- link the js files below-->
+    <script src="{% static 'app1/js/myscript.js' %}"></script>
     <script src="{% static 'app1/js/jquery.js' %}"></script>
     <script src="{% static 'app1/js/popper.js' %}"></script>
-    <script src="{% static 'app1/js/owl.carousel.min.js' %}"></script>
     <script src="{% static 'app1/js/fontawesome.min.js' %}"></script>
+    <script src="{% static 'app1/js/owl.carousel.min.js' %}"></script>
     <script src="{% static 'app1/js/bootstrap.min.js' %}"></script>
 </body>
 </html>
