@@ -14,7 +14,7 @@ $('#slider1, #slider2, #slider3').owlCarousel({
             autoplay: true,
         },
         1000: {
-            items: 1,
+            items: 5,
             nav: true,
             loop: true,
             autoplay: true,
@@ -23,7 +23,7 @@ $('#slider1, #slider2, #slider3').owlCarousel({
 })
 
 $('.plus-cart').click(function() {
-    var.id = $(this).attr("pid").toString();
+    var id = $(this).attr("pid").toString();
     console.log(id)
     $.ajax(
         {
@@ -38,5 +38,4 @@ $('.plus-cart').click(function() {
             }
         }
     )
-}
-)
+})
