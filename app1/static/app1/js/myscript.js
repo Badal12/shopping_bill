@@ -23,8 +23,8 @@ $('#slider1, #slider2, #slider3').owlCarousel({
 })
 
 $('.plus-cart').click(function() {
-    var id = $(this).attr("pid").toString();
-    console.log(id)
+    var id = $(this).attr("prod_id.id").toString();
+    var eml = this.parentNode.children[2]
     $.ajax({
         type:'GET',
         url :"/pluscart",
@@ -32,8 +32,7 @@ $('.plus-cart').click(function() {
             prod_id:id 
         },
         success:function(data){
-            console.log(data)
-            console.log("success")
+            eml.innerText = data.quantity
         }
         }
     )

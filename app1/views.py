@@ -134,16 +134,16 @@ def add_to_cart(request):
 #here creating a object of cart that saves the data and render it will show all thedata
 def show_cart(request):
     if request.user.is_authenticated:
-        user = request.user
+        user = request.user #will get the user
         cart = Cart.objects.filter(user=user)
         amount = 0.0
         shipping_amount = 70.0
         total_amount = 0.0
-        cart_product = [p for p in Cart.objects.all() if p.user == request.user]
-        if cart_product:
-            for p in cart_product:
-                tempamount = (p.quantity * p.product.discounted_price)
-                amount +=tempamount
+        cart_product = [p for p in Cart.objects.all() if p.user == request.user]#will get the product of authenticated user
+        if cart_product: #if the user has the addedd the product to cart then 
+            for p in cart_product: #all the product will come in p of all the product added and count the total amt
+                tempamount = (p.quantity * p.product.discounted_price) #multiply the quantity * discounted price
+                amount +=tempamount 
                 totalamount = amount + shipping_amount
             return render(request, 'app1/addtocart.html', {'carts':cart, 'totalamount':totalamount, 'amount':amount})
         else:
