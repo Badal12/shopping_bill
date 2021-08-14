@@ -5,7 +5,7 @@ $('#slider1, #slider2, #slider3').owlCarousel({
     responsive: {
         0: {
             items: 1,
-            nav: false,
+            nav: true,
             autoplay: true,
         },
         600: {
@@ -25,17 +25,16 @@ $('#slider1, #slider2, #slider3').owlCarousel({
 $('.plus-cart').click(function() {
     var id = $(this).attr("pid").toString();
     console.log(id)
-    $.ajax(
-        {
-            type:'GET',
-            url :"/pluscart",
-            data:{
-                prod_id:id 
-            },
-            success:function(data){
-                console.log(data)
-                console.log("success")
-            }
+    $.ajax({
+        type:'GET',
+        url :"/pluscart",
+        data:{
+            prod_id:id 
+        },
+        success:function(data){
+            console.log(data)
+            console.log("success")
+        }
         }
     )
 })

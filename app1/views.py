@@ -151,10 +151,12 @@ def show_cart(request):
 
 def plus_cart(request):
     if request.method == 'GET':
-        prod_id = request.GET['prod_id']
+        prod_id = request.GET['prod_id'] #below compare theid got from ajax and the login user id both condin must true
+        print(prod_id)
         c = Cart.objects.get(Q(product=prod_id) & Q(user=request.user))
         c.quantity += 1
         c.save()
+        #recalculate the price after  increasing the product
         amount = 0.0
         shipping_amount = 70.0
         total_amount = 0.0
@@ -164,7 +166,7 @@ def plus_cart(request):
                 tempamount = (p.quantity * p.product.discounted_price)
                 amount +=tempamount
                 totalamount = amount + shipping_amount
-
+            #now pass the above data into ajax create var data 
             data = {
                 'quantity': c.quantity,
                 'amount': amount,
