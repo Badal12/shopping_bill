@@ -7,6 +7,10 @@ from . forms import CustomerRegistrationForm, CustomerProfileForm  #will import 
 from django.contrib import messages #import for to show msg successfully registered
 from django.db.models import Q
 from django.http import JsonResponse
+#for function base view--to not to access the field like profile,orders,ect give the login_required 
+from django.contrib.auth.decorators import login_required
+#for class base view--to not to access the field like profile,orders,ect give the login_required  
+from django.utils.decorators import method_decorator
 
 '''here we are rendering the home.html and we are gone write the 
 logic of filtering the bottom-wear product, mobile product, etc and we are gonna pass 
@@ -19,12 +23,13 @@ it using for loop inside the home.html
 on the base on category we are gonna filter it from db of models created field
 filter the product according to category and put into perticular field
 '''
+
 class ProductView(View):
- def get(self, request):
-  topwears = Product.objects.filter(category='TW')
-  bottomwears = Product.objects.filter(category='BW')
-  mobiles = Product.objects.filter(category='M')
-  return render(request, 'app1/home.html', {'topwears': topwears, 'bottomwears': bottomwears, 'mobiles': mobiles})
+    def get(self, request):
+        topwears = Product.objects.filter(category='TW')
+        bottomwears = Product.objects.filter(category='BW')
+        mobiles = Product.objects.filter(category='M')
+        return render(request, 'app1/home.html', {'topwears': topwears, 'bottomwears': bottomwears, 'mobiles': mobiles})
 #now we will pass this filter thorough context through dictionaryin the home.html file can print using for loop
 '''
 when we click on any product we should get all the details with unique id of product
@@ -37,7 +42,11 @@ for that we will have to write the class base view and same as have to pass the 
 class ProductDetailView(View):
  def get(self, request, pk):
   product = Product.objects.get(pk=pk) #from db will fetch the id and assign to it
-  return render(request, 'app1/productdetail.html', {'product': product}) #here we have to change the .html
+  #if any product is already in cart then that time it should not addedd to cart again for that we have to check and show the go to cart butoon on that product
+  item_already_in_cart = False
+  if request.user.is_authenticated:
+      item_already_in_cart = Cart.objects.filter(Q(product=product.id) & Q(user=request.user)).exists()
+  return render(request, 'app1/productdetail.html', {'product': product, 'item_already_in_cart':item_already_in_cart}) #here we have to change the .html
 
 
 def buy_now(request):
@@ -89,6 +98,7 @@ def resetpassword(request):
 # return render(request, 'app1/profile.html')
 
 #creating view for profile to save the address in db need to create a modelform and urls and templates
+@method_decorator(login_required, name='dispatch')
 class ProfileView(View):
     def get(self, request):
         form = CustomerProfileForm()
@@ -110,6 +120,7 @@ class ProfileView(View):
         return render(request, 'app1/profile.html', {'form':form, 'active':'btn-primary'})
 
 #to show the saved address into address fiel of profile write down the below 
+@login_required
 def address(request):
     add = Customer.objects.filter(user=request.user) #if you want current user use request.user
     return render(request, 'app1/address.html', {'add':add, 'active':'btn-primary'})
@@ -117,6 +128,7 @@ def address(request):
 #here we have to going to save thedata wht data in cart 
 #1st-we have product id which product is addedd to cart for buy
 #2nd which user selected a product to cart- want user
+@login_required
 def add_to_cart(request):
     user = request.user
     product_id = request.GET.get('prod_id')
@@ -195,6 +207,7 @@ def minus_cart(request):
             return JsonResponse(data)
 
 #for remove button logic belwo
+
 def remove_cart(request):
     if request.method == 'GET':
         prod_id = request.GET['prod_id'] #below compare theid got from ajax and the login user id both condin must true
@@ -221,7 +234,7 @@ def remove_cart(request):
 
 #----------------after product added to the cart ----now place the order --render the checkout ---view will create
 #we need 2 things 1.cust address 2.product details 3.total amt toshwo in checkout
-
+@login_required
 def checkout(request):
     user = request.user
     addres = Customer.objects.filter(user= user)
@@ -240,12 +253,14 @@ def checkout(request):
 
 
 #now show the datainto orderpalced  template that allthe detail regarding order placed
+@login_required
 def orders(request):
     #retrive the data from  orderplaced db table whatever the data is placed by theuse is stored into that table and display inot order.html
     op = OrderPlaced.objects.filter(user=request.user)
     return render(request, 'app1/orders.html', {'order_placed':op}) #pass the all the data which is inside the op var into template
 
 #what are the things required in order_placed db table are check in db tablw and then retrive the data nad save it
+@login_required
 def payment_done(request):
     user = request.user
     custid = request.GET.get('custid') #this custid got it in checkout.html 
