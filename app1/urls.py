@@ -17,7 +17,6 @@ urlpatterns = [
     path('orders/', views.orders, name='orders'),
     path('mobile/', views.mobile, name='mobile'), #data = none in views.py so it will show all the mobile
     path('mobile/<slug:data>', views.mobile, name='mobiledata'),
-    path('checkout/', views.checkout, name='checkout'),
 
     #profile create class base url
     path('profile/', views.ProfileView.as_view(), name='profile'),
@@ -65,6 +64,17 @@ urlpatterns = [
     path('cart/', views.show_cart, name='showcart'),
         
     path('pluscart/', views.plus_cart, name='pluscart'),
+    #url for minus cart
+    path('minuscart/', views.minus_cart, name='minuscart'),
+
+    path('removecart/', views.remove_cart, name='removecart'),
+
+    #-----after addedd product tocart now checkout----------
+    path('checkout/', views.checkout, name='checkout'),
+
+    path('paymentdone/', views.payment_done, name='paymentdone'),
+
+
 
 
 

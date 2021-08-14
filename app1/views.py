@@ -43,8 +43,6 @@ class ProductDetailView(View):
 def buy_now(request):
  return render(request, 'app1/buynow.html')
 
-def orders(request):
- return render(request, 'app/orders.html')
 
 def change_password(request):
  return render(request, 'app/changepassword.html')
@@ -80,8 +78,6 @@ class CustomerRegistrationView(View):
          form.save()
      return render(request, 'app1/customerregistration.html', {'form': form})
 
-def checkout(request):
- return render(request, 'app1/checkout.html')
 
 def resetpassword(request):
     return render(request, 'app1/password_reset.html')
@@ -141,7 +137,7 @@ def show_cart(request):
         total_amount = 0.0
         cart_product = [p for p in Cart.objects.all() if p.user == request.user]#will get the product of authenticated user
         if cart_product: #if the user has the addedd the product to cart then 
-            for p in cart_product: #all the product will come in p of all the product added and count the total amt
+            for p in cart_product: #all the product will come in p of all the product added and 
                 tempamount = (p.quantity * p.product.discounted_price) #multiply the quantity * discounted price
                 amount +=tempamount 
                 totalamount = amount + shipping_amount
@@ -165,26 +161,101 @@ def plus_cart(request):
             for p in cart_product:
                 tempamount = (p.quantity * p.product.discounted_price)
                 amount +=tempamount
-                totalamount = amount + shipping_amount
             #now pass the above data into ajax create var data 
             data = {
                 'quantity': c.quantity,
                 'amount': amount,
-                'totalamount': totalamount
+                'totalamount': amount + shipping_amount
+            }
+            return JsonResponse(data)
+
+#for minus button logic belwo
+def minus_cart(request):
+    if request.method == 'GET':
+        prod_id = request.GET['prod_id'] #below compare theid got from ajax and the login user id both condin must true
+        print(prod_id)
+        c = Cart.objects.get(Q(product=prod_id) & Q(user=request.user))
+        c.quantity -= 1
+        c.save()
+        #recalculate the price after  increasing the product
+        amount = 0.0
+        shipping_amount = 70.0
+        total_amount = 0.0
+        cart_product = [p for p in Cart.objects.all() if p.user == request.user]
+        if cart_product:
+            for p in cart_product:
+                tempamount = (p.quantity * p.product.discounted_price)
+                amount +=tempamount
+            #now pass the above data into ajax create var data 
+            data = {
+                'quantity': c.quantity,
+                'amount': amount,
+                'totalamount': amount + shipping_amount
+            }
+            return JsonResponse(data)
+
+#for remove button logic belwo
+def remove_cart(request):
+    if request.method == 'GET':
+        prod_id = request.GET['prod_id'] #below compare theid got from ajax and the login user id both condin must true
+        print(prod_id)
+        c = Cart.objects.get(Q(product=prod_id) & Q(user=request.user))
+        c.delete()
+        #recalculate the price after  deleting the product
+        amount = 0.0
+        shipping_amount = 70.0
+        total_amount = 0.0
+        cart_product = [p for p in Cart.objects.all() if p.user == request.user]
+        if cart_product:
+            for p in cart_product:
+                tempamount = (p.quantity * p.product.discounted_price)
+                amount +=tempamount
+            #now pass the above data into ajax create var data 
+            data = {
+                'amount': amount,
+                'totalamount': amount +shipping_amount,
             }
             return JsonResponse(data)
 
 
 
+#----------------after product added to the cart ----now place the order --render the checkout ---view will create
+#we need 2 things 1.cust address 2.product details 3.total amt toshwo in checkout
+
+def checkout(request):
+    user = request.user
+    addres = Customer.objects.filter(user= user)
+    cart_items = Cart.objects.filter(user=user)
+    amount = 0.0
+    shipping_amount = 70.0
+    totalamount = 0.0
+    cart_product = [p for p in Cart.objects.all() if p.user == request.user]
+    if cart_product:  #if the cart has some product then only we will calculate the totalamt
+        for p in cart_product:
+            tempamount = (p.quantity * p.product.discounted_price)
+            amount += tempamount
+        totalamount = amount + shipping_amount
+    return render(request, 'app1/checkout.html', {'addres':addres, 'totalamount':totalamount, 'cart_items':cart_items})
 
 
 
+#now show the datainto orderpalced  template that allthe detail regarding order placed
+def orders(request):
+    #retrive the data from  orderplaced db table whatever the data is placed by theuse is stored into that table and display inot order.html
+    op = OrderPlaced.objects.filter(user=request.user)
+    return render(request, 'app1/orders.html', {'order_placed':op}) #pass the all the data which is inside the op var into template
 
-
-
-
-
-
+#what are the things required in order_placed db table are check in db tablw and then retrive the data nad save it
+def payment_done(request):
+    user = request.user
+    custid = request.GET.get('custid') #this custid got it in checkout.html 
+    customer = Customer.objects.get(id= custid) #retriving customer object from customer db table
+    cart = Cart.objects.filter(user=user) #all the datais filtering from cart saving into cart variable
+    for c in cart:  #the for loop will loop for every product and save the data of every produvt
+        #saving data into orderplaced db table and ofter that data is deleting from cart
+        OrderPlaced(user=user, customer=customer, product = c.product, quantity = c.quantity).save()
+        c.delete() #after saving data into deleter it from cart
+        return redirect("orders") #it will redirect to the below view 
 
 
 

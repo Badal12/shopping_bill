@@ -79,6 +79,10 @@ class Cart(models.Model):
 
     def __str__(self):
         return str(self.id)
+    #how to calculate the total cost of on product display in checkout.html write code in model.spy
+    @property
+    def total_cost(self):
+        return self.quantity * self.product.discounted_price
 
 STATUS_CHOICES = (
     ('Accepted', 'Accepted'),
