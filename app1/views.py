@@ -26,10 +26,13 @@ filter the product according to category and put into perticular field
 
 class ProductView(View):
     def get(self, request):
+        totalitem = 0 #to show no of item in cart use this code
         topwears = Product.objects.filter(category='TW')
         bottomwears = Product.objects.filter(category='BW')
         mobiles = Product.objects.filter(category='M')
-        return render(request, 'app1/home.html', {'topwears': topwears, 'bottomwears': bottomwears, 'mobiles': mobiles})
+        if request.user.is_authenticated:
+            totalitem = len(Cart.objects.filter(user=request.user))
+        return render(request, 'app1/home.html', {'topwears': topwears, 'bottomwears': bottomwears, 'mobiles': mobiles, 'totalitem':totalitem})
 #now we will pass this filter thorough context through dictionaryin the home.html file can print using for loop
 '''
 when we click on any product we should get all the details with unique id of product
@@ -41,12 +44,12 @@ for that we will have to write the class base view and same as have to pass the 
 
 class ProductDetailView(View):
  def get(self, request, pk):
-  product = Product.objects.get(pk=pk) #from db will fetch the id and assign to it
-  #if any product is already in cart then that time it should not addedd to cart again for that we have to check and show the go to cart butoon on that product
-  item_already_in_cart = False
-  if request.user.is_authenticated:
-      item_already_in_cart = Cart.objects.filter(Q(product=product.id) & Q(user=request.user)).exists()
-  return render(request, 'app1/productdetail.html', {'product': product, 'item_already_in_cart':item_already_in_cart}) #here we have to change the .html
+    product = Product.objects.get(pk=pk) #from db will fetch the id and assign to it
+    #if any product is already in cart then that time it should not addedd to cart again for that we have to check and show the go to cart butoon on that product
+    item_already_in_cart = False
+    if request.user.is_authenticated:
+        item_already_in_cart = Cart.objects.filter(Q(product=product.id) & Q(user=request.user)).exists()
+    return render(request, 'app1/productdetail.html', {'product': product, 'item_already_in_cart':item_already_in_cart}) #here we have to change the .html
 
 
 def buy_now(request):

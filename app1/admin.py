@@ -1,4 +1,6 @@
 from django.contrib import admin
+from django.utils.html import format_html
+from django.urls import reverse
 from .models import (
 Customer,
 Product,
@@ -20,5 +22,17 @@ class CartModelAdmin(admin.ModelAdmin):
 
 @admin.register(OrderPlaced)
 class OrderPlacedModelAdmin(admin.ModelAdmin):
-    list_display = ['id', 'user', 'customer', 'product', 'quantity', 'ordered_date', 'status']
+    list_display = ['id', 'user', 'customer','cutomer_info', 'product','product_info', 'quantity', 'ordered_date', 'status']
+
+    #to show the details of product of perticular (user )in admin panel write below code
+    def cutomer_info(self,obj):
+        link = reverse("admin:app1_customer_change", args=[obj.customer.pk]) 
+        return format_html('<a href="{}">{}</a>',link, obj.customer.name)
+
+
+
+    #to show the details of product of perticular (product) in admin panel write below code
+    def product_info(self,obj): 
+        link = reverse("admin:app1_product_change", args=[obj.product.pk]) 
+        return format_html('<a href="{}">{}</a>',link, obj.product.title)
 
