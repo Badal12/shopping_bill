@@ -19,4 +19,7 @@ from django.urls import path,include
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('app1.urls')),
+
+    #now link the api url here
+    path('api/', include('app1.api.urls')),
 ]

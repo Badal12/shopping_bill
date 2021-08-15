@@ -83,3 +83,4 @@ urlpatterns = [
 
     #to show the images properly in browser which is stored from admin panel in db by seller need to do setting 
 ]+static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
