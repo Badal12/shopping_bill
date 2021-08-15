@@ -52,7 +52,7 @@
     <!-- Slider 1 -->
     <div class="owl-carousel" id="slider1">
     {% for b in bottomwears %}
-     <a href="{% url 'product-detail' b.id %}" class="btn"><div class="item"><img src="{{b.product_image.url}}" alt="" height="300px"><span class="fw-bold">{{b.title}}</span><br><span class="fs-5">{{b.discounted_price}}</span></div></a>
+     <a href="{% url 'product-detail' b.id %}" class="btn"><div class="item"><img src="{{b.product_image.url}}" alt="" height="300px"><span class="fw-bold">{{b.title}}</span><br><span class="fs-5">Rs. {{b.discounted_price}}</span></div></a>
      {% endfor %}
      <!--here we deleted the below code to filter the product passing here using for loop -->
     </div>
@@ -106,7 +106,7 @@
          <div class="item">
              <img src="{{tp.product_image.url}}" alt="" height="300px"> <!-- inside image take two  span of title and price-->
              <span class="fw-bold">{{tp.title}}</span><br>
-             <span class="fs-5">{{tp.discounted_price}}</span></div></a>
+             <span class="fs-5">Rs. {{tp.discounted_price}}</span></div></a>
     {% endfor %}
  </div> 
 </div>
@@ -119,7 +119,7 @@
  <!-- Slider 3 -->
  <div class="owl-carousel" id="slider3">
   {% for m in mobiles %}
-  <a href="{% url 'product-detail' m.id %}" class="btn"><div class="item"><img src="{{m.product_image.url}}" alt="" height="300px"><span class="fw-bold">{{m.title}}</span><br><span class="fs-5">{{m.discounted_price}}</span></div></a>
+  <a href="{% url 'product-detail' m.id %}" class="btn"><div class="item"><img src="{{m.product_image.url}}" alt="" height="300px"><span class="fw-bold">{{m.title}}</span><br><span class="fs-5">Rs.{{m.discounted_price}}</span></div></a>
   {% endfor %}
  </div>
 </div>
